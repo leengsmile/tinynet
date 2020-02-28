@@ -4,7 +4,7 @@ from typing import List
 from tinynet import Tensor
 from tinynet import Linear, Tanh, Layer, Sequential
 from tinynet import Module, CrossEntropy, MSE
-from tinynet import SGD
+from tinynet import SGD, Adam
 from tinynet import BatchDataset
 
 
@@ -53,7 +53,8 @@ train_dataset = BatchDataset(train_data, train_label, batch_size=200, shuffle=Tr
 
 model = FizzBuzzModel(train_data.shape[1], 50, 4)
 criterion = CrossEntropy()
-optimizer = SGD(model, lr=0.0005, momentum=0.2, nesterov=True)
+# optimizer = SGD(model, lr=0.0005, momentum=0.2, nesterov=True)
+optimizer = Adam(model, lr=0.001)
 
 
 def evaluate(model: Module):
@@ -69,7 +70,7 @@ def evaluate(model: Module):
     return hit / total
 
 
-for epoch in range(5000):
+for epoch in range(2000):
     total_loss = 0.
     for batch_inputs, batch_targets in train_dataset:
 
