@@ -9,17 +9,18 @@ from tinynet.tensor import Tensor
 
 class Adam(Optimizer):
 
-    def __init__(self, model: Sequential, lr: float = 1e-3, betas: Tuple[float, float] = (0.9, 0.99),
-                 eps: float = 1e-9) -> None:
+    def __init__(self, model: Sequential, lr: float = 1e-3, betas: Tuple[float, float] = (0.9, 0.999),
+                 weight_decay: float = 0,
+                 eps: float = 1e-8) -> None:
 
         self.model = model
-        self.defaults = dict(lr=lr, betas=betas, eps=eps)
+        self.defaults = dict(lr=lr, betas=betas, weight_decay=weight_decay, eps=eps)
         self.state = defaultdict(dict)
 
     def step(self, grad: Tensor):
 
         lr = self.defaults["lr"]
-        betas = self.defaults["betas"]
+        weight_decay = self.defaults["weight_decay"]
         eps = self.defaults["eps"]
 
         for layer in self.model.layers.layers:
@@ -37,6 +38,9 @@ class Adam(Optimizer):
                 beta1, beta2 = self.defaults["betas"]
                 state["step"] += 1
 
+                if weight_decay:
+                    grad += weight_decay * param
+
                 bias_correction1 = 1 - beta1 ** state["step"]
                 bias_correction2 = 1 - beta2 ** state["step"]
                 exp_avg = state["exp_avg"] = exp_avg * beta1 + (1 - beta1) * grad
@@ -45,4 +49,4 @@ class Adam(Optimizer):
                 exp_avg = exp_avg / bias_correction1
                 exp_avg_sq = exp_avg_sq / bias_correction2
 
-                param -= lr * exp_avg / np.sqrt(exp_avg_sq)
+                param -= lr * exp_avg / (np.sqrt(exp_avg_sq) + eps)

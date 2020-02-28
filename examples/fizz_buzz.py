@@ -54,7 +54,7 @@ train_dataset = BatchDataset(train_data, train_label, batch_size=200, shuffle=Tr
 model = FizzBuzzModel(train_data.shape[1], 50, 4)
 criterion = CrossEntropy()
 # optimizer = SGD(model, lr=0.0005, momentum=0.2, nesterov=True)
-optimizer = Adam(model, lr=0.001)
+optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
 
 
 def evaluate(model: Module):
@@ -70,7 +70,7 @@ def evaluate(model: Module):
     return hit / total
 
 
-for epoch in range(2000):
+for epoch in range(5000):
     total_loss = 0.
     for batch_inputs, batch_targets in train_dataset:
 
