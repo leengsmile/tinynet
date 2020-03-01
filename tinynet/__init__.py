@@ -6,4 +6,5 @@ from .optim.sgd import SGD
 from .optim.adam import Adam
 from .optim.adagrad import Adagrad
 from .optim.adadelta import Adadelta
+from .optim.rmsprop import RMSprop
 from .data import BatchDataset

@@ -21,7 +21,6 @@ class Adadelta(Optimizer):
         weight_decay = self.defaults["weight_decay"]
         rho = self.defaults["rho"]
         eps = self.defaults["eps"]
-        eps = 1e-9
 
         for layer in self.model.layers.layers:
 

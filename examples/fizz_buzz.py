@@ -1,10 +1,11 @@
 import numpy as np
+
 np.random.seed(1)
 from typing import List
 from tinynet import Tensor
-from tinynet import Linear, Tanh, Layer, Sequential
-from tinynet import Module, CrossEntropy, MSE
-from tinynet import SGD, Adadelta, Adagrad, Adam
+from tinynet import Linear, Tanh, Sequential
+from tinynet import Module, CrossEntropy
+from tinynet import RMSprop, Adam
 from tinynet import BatchDataset
 
 
@@ -13,7 +14,6 @@ def binary_encode(x: int, n: int = 10) -> List[int]:
 
 
 def fizz_buzz_encode(x: int) -> int:
-
     if x % 15 == 0:
         return 3
         # return [0, 0, 0, 1]
@@ -46,7 +46,7 @@ class FizzBuzzModel(Module):
         return self.layers.backward(grad)
 
 
-train_data = np.array([binary_encode(x) for x in range(101, 2**10)])
+train_data = np.array([binary_encode(x) for x in range(101, 2 ** 10)])
 train_label = np.array([fizz_buzz_encode(x) for x in range(101, 2 ** 10)])
 
 train_dataset = BatchDataset(train_data, train_label, batch_size=200, shuffle=True)
@@ -54,8 +54,9 @@ train_dataset = BatchDataset(train_data, train_label, batch_size=200, shuffle=Tr
 model = FizzBuzzModel(train_data.shape[1], 50, 4)
 criterion = CrossEntropy()
 # optimizer = SGD(model, lr=0.0005, momentum=0.2, nesterov=True)
-optimizer = Adadelta(model, lr=1/200, rho=0.9)
+# optimizer = Adadelta(model, lr=1/200, rho=0.9)
 # optimizer = Adagrad(model, lr=0.5, weight_decay=0.0, eps=1e-10)
+optimizer = RMSprop(model, lr=0.001, alpha=0.9, momentum=0.9, centered=True)
 
 # optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
 
@@ -76,7 +77,6 @@ def evaluate(model: Module):
 for epoch in range(5000):
     total_loss = 0.
     for batch_inputs, batch_targets in train_dataset:
-
         model.zero_grad()
         out = model(train_data)
         loss = criterion(out, train_label)
