@@ -4,7 +4,7 @@ from typing import List
 from tinynet import Tensor
 from tinynet import Linear, Tanh, Layer, Sequential
 from tinynet import Module, CrossEntropy, MSE
-from tinynet import SGD, Adam
+from tinynet import SGD, Adagrad, Adam
 from tinynet import BatchDataset
 
 
@@ -54,7 +54,9 @@ train_dataset = BatchDataset(train_data, train_label, batch_size=200, shuffle=Tr
 model = FizzBuzzModel(train_data.shape[1], 50, 4)
 criterion = CrossEntropy()
 # optimizer = SGD(model, lr=0.0005, momentum=0.2, nesterov=True)
-optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
+optimizer = Adagrad(model, lr=0.5, weight_decay=0.0, eps=1e-10)
+
+# optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
 
 
 def evaluate(model: Module):
