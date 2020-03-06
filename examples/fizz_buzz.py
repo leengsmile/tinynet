@@ -5,7 +5,7 @@ from typing import List
 from tinynet import Tensor
 from tinynet import Linear, Tanh, Sequential
 from tinynet import Module, CrossEntropy
-from tinynet import RMSprop, Adam
+from tinynet import Adadelta, RMSprop, Adam, AdamMax, AdamW
 from tinynet import BatchDataset
 
 
@@ -54,11 +54,13 @@ train_dataset = BatchDataset(train_data, train_label, batch_size=200, shuffle=Tr
 model = FizzBuzzModel(train_data.shape[1], 50, 4)
 criterion = CrossEntropy()
 # optimizer = SGD(model, lr=0.0005, momentum=0.2, nesterov=True)
-# optimizer = Adadelta(model, lr=1/200, rho=0.9)
+# optimizer = Adadelta(model, lr=1, rho=0.95)
 # optimizer = Adagrad(model, lr=0.5, weight_decay=0.0, eps=1e-10)
-optimizer = RMSprop(model, lr=0.001, alpha=0.9, momentum=0.9, centered=True)
+# optimizer = RMSprop(model, lr=0.001, alpha=0.9, momentum=0.9, centered=True)
 
 # optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
+optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
+# optimizer = AdamW(model, lr=0.001, betas=(0.9, 0.99), weight_decay=0.001)
 
 
 def evaluate(model: Module):

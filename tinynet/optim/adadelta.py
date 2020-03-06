@@ -40,9 +40,9 @@ class Adadelta(Optimizer):
                 square_avg, acc_delta = state["square_avg"], state["acc_delta"]
                 square_avg = rho * square_avg + (1 - rho) * grad ** 2
                 delta = np.sqrt(acc_delta + eps) / (np.sqrt(square_avg + eps)) * grad  # pytorch update rule
-                # delta = np.sqrt(acc_delta) / (np.sqrt(square_avg) + eps) * grad
+
                 param -= lr * delta
 
                 state["square_avg"] = square_avg
-                state["acc_delta"] = rho * acc_delta + (1 - rho) ** delta ** 2
+                state["acc_delta"] = rho * acc_delta + (1 - rho) * delta ** 2
 
