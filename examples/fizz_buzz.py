@@ -3,9 +3,9 @@ import numpy as np
 np.random.seed(1)
 from typing import List
 from tinynet import Tensor
-from tinynet import Linear, Tanh, Sequential
+from tinynet import Linear, Tanh, Sequential, GELU
 from tinynet import Module, CrossEntropy
-from tinynet import Adadelta, RMSprop, Adam, AdamMax, AdamW
+from tinynet import SGD, Adadelta, RMSprop, Adam, AdamMax, AdamW
 from tinynet import BatchDataset
 
 
@@ -34,7 +34,7 @@ class FizzBuzzModel(Module):
         super().__init__()
         self.layers = Sequential([
             Linear(input_size, hidden_size),
-            Tanh(),
+            GELU(),
             Linear(hidden_size, output_size)
         ])
 
@@ -53,13 +53,13 @@ train_dataset = BatchDataset(train_data, train_label, batch_size=200, shuffle=Tr
 
 model = FizzBuzzModel(train_data.shape[1], 50, 4)
 criterion = CrossEntropy()
-# optimizer = SGD(model, lr=0.0005, momentum=0.2, nesterov=True)
+optimizer = SGD(model, lr=0.0005, momentum=0.9, nesterov=True)
 # optimizer = Adadelta(model, lr=1, rho=0.95)
 # optimizer = Adagrad(model, lr=0.5, weight_decay=0.0, eps=1e-10)
 # optimizer = RMSprop(model, lr=0.001, alpha=0.9, momentum=0.9, centered=True)
 
 # optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
-optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
+# optimizer = Adam(model, lr=0.001, betas=(0.9, 0.99))
 # optimizer = AdamW(model, lr=0.001, betas=(0.9, 0.99), weight_decay=0.001)
 
 

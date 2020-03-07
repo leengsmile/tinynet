@@ -31,7 +31,6 @@ class TestTensorCrossEntropy(unittest.TestCase):
         torch_actual = torch.LongTensor(actual)
         torch_loss = torch_criterion.forward(torch_predicted, torch_actual)
 
-        # assert np.testing.assert_almost_equal(loss, torch_loss.item())
         torch_loss.backward()
         print("torch loss:", torch_loss.item())
         print("torch grad:", torch_predicted.grad)

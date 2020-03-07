@@ -1,7 +1,7 @@
 from typing import Dict, List
 import numpy as np
 from .tensor import Tensor
-from .functional import tanh
+from .functional import tanh, gelu, d_gelu
 
 
 class Layer:
@@ -38,6 +38,17 @@ class Tanh(Layer):
     def backward(self, grad: Tensor) -> Tensor:
         y = tanh(self.inputs)
         return grad * (1 - y * y)
+
+
+class GELU(Layer):
+
+    def __call__(self, inputs: Tensor) -> Tensor:
+        self.inputs = inputs
+        return gelu(inputs)
+
+    def backward(self, grad: Tensor) -> Tensor:
+        z = d_gelu(self.inputs)
+        return grad * z
 
 
 class Linear(Layer):
